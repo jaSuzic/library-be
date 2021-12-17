@@ -8,16 +8,6 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestj
 export class BooksController {
 
     constructor(private readonly booksService: BooksService) {}
-
-    /*
-        //PAGINACIJA: 
-
-        @Get()
-        findAll(@Query() paginationQuery) {
-            const { limit, offset } = paginationQuery;
-            return 'Something'
-        }
-    */
     
     @Get()
     getBooks(@Query() paginationQuery: PaginationQueryDto) {
