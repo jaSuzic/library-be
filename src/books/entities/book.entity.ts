@@ -1,6 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-
+import { Rent } from './../../rents/entities/rent.entity';
 @Entity()
 export class Book {
 
@@ -12,6 +12,9 @@ export class Book {
     author: string;
     @Column()
     year: number;
-    @Column({nullable: true})
-    image?: string
+    @Column({ nullable: true })
+    imagePath?: string
+
+    @OneToMany(() => Rent, rent => rent.book)
+    rents: Rent[]
 }

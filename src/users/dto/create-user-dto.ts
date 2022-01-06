@@ -1,5 +1,4 @@
-import { IsOptional, isString, IsString } from "class-validator";
-
+import { IsOptional, IsString } from "class-validator";
 export class CreateUserDto {
 
     @IsString()
@@ -12,8 +11,8 @@ export class CreateUserDto {
     lastName: string;
     @IsString()
     position: string;
-    
+
     @IsString()
     @IsOptional()
-    image?: string
+    imagePath?: string
 }

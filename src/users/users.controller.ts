@@ -1,19 +1,18 @@
-import { PaginationQueryDto } from './../common/dto/pagination-query.dto';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { UsersService } from './users.service';
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query } from '@nestjs/common';
 
 @Controller('users')
 export class UsersController {
 
-    constructor(private readonly usersService: UsersService) {}
+    constructor(private readonly usersService: UsersService) { }
 
-
-    // [TODO] this should be fixed/tested with FE part
-    @Get('/getUsers')
-    getUsersExceptLoggedOne(@Query() paginationQuery: PaginationQueryDto, @Headers() header: any) {
-        console.log("Jaksa header: ", header)
-        return this.usersService.findAllExceptLogged(paginationQuery);
+    @Post('/getUsers')
+    getUsersExceptLoggedOne(@Body('email') email: string) {
+        return this.usersService.findAllExceptLogged(email);
     }
 
     @Get(':email')
@@ -21,14 +20,22 @@ export class UsersController {
         return this.usersService.findOne(email);
     }
 
-    @Post('/login') 
-    login(@Body('email') email:string, @Body('password') pass: string) {
+    @Post('/login')
+    login(@Body('email') email: string, @Body('password') pass: string) {
         return this.usersService.login(email, pass)
     }
 
+    @UseInterceptors(FileInterceptor('image'))
     @Post('/register')
-    createUser(@Body() body) {
-        return this.usersService.createUser(body);
+    createUser(@Body() body: any, @UploadedFile() file: Express.Multer.File) {
+        const data: CreateUserDto = {
+            email: body.email,
+            password: body.password,
+            firstName: body.firstName,
+            lastName: body.lastName,
+            position: body.position
+        }
+        return this.usersService.createUser(data, file);
     }
 
     @Delete(':email')
@@ -38,17 +45,25 @@ export class UsersController {
     }
 
     @Post('/updatePass')
-    updatePassword(@Body('email') email: string, @Body('password') password) {
-        this.usersService.updatePassword(email, password) 
+    updatePassword(@Body('email') email: string, @Body('newPass') newPassword, @Body('oldPass') oldPassword) {
+        return this.usersService.updatePassword(email, newPassword, oldPassword)
     }
 
+    @UseInterceptors(FileInterceptor('image'))
     @Patch('/updateImage')
-    updateImage(@Body() body) {
-        throw new Error('not yet implemented')
+    updateImage(@Body('email') email: string, @UploadedFile() file: Express.Multer.File) {
+        return this.usersService.updateImage(email, file);
     }
 
-    @Patch('/updateUser') 
-    updateUser(@Body() updateUserDto: UpdateUserDto) {
-        return this.usersService.update(updateUserDto)
+    @UseInterceptors(FileInterceptor('image'))
+    @Patch('/updateUser')
+    updateUser(@Body() body: any, @UploadedFile() file: Express.Multer.File) {
+        const data: UpdateUserDto = {
+            email: body.email,
+            firstName: body.firstName,
+            lastName: body.lastName,
+            position: body.position
+        }
+        return this.usersService.update(data, file)
     }
 }

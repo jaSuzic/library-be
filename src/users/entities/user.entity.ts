@@ -1,7 +1,6 @@
-import { Column, Entity, Index, PrimaryColumn, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, Entity, Index, PrimaryColumn } from "typeorm";
 
 @Entity()
-// @Unique(['email'])
 export class User {
 
     @PrimaryColumn()
@@ -15,7 +14,7 @@ export class User {
     lastName: string;
     @Column()
     position: string;
-    
-    @Column({nullable: true})
-    image?: string
+
+    @Column({ nullable: true })
+    imagePath?: string
 }
