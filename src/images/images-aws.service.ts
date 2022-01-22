@@ -33,7 +33,7 @@ export class UploadImageAwsService {
     getS3() {
         return new S3({
             accessKeyId: process.env.AWS_ACCESS_KEY,
-            secretAccessKey: process.env.AWS_SECRET_KEY
+            secretAccessKey: process.env.AWS_MY_SECRET_KEY
         })
     }
 
